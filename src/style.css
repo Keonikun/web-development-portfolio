@@ -2,15 +2,26 @@ html,
 body,
 #root
 {
-    /* ---------------------------------- VARIABLES ---------------------------------------- */
+    /* ================================================================================== */
+    /* ---------------------------------- OPTIONS --------------------------------------- */
+    /* ================================================================================== */
 
     --highlight-color: #70848d;
     --background-color: rgb(28, 31, 37);
+    --background-highlight: #500112;
+
+    --motion-highlight: #ffffff;
+
     --text-dark: black;
     --text-light: white;
+    --text-highlight: #cf0732;
 
     --defaultText: 'Satoshi', sans-serif;
     --specialText: 'Array', sans-serif;
+
+    /* ================================================================================== */
+    /* ---------------------------------------------------------------------------------- */
+    /* ================================================================================== */
 
     position: fixed;
     top: 0;
@@ -35,6 +46,11 @@ h1
 h2
 {
     font-weight: 400;
+}
+
+.textHighlight
+{
+    color: var(--text-highlight);
 }
 
 .testBackground
@@ -334,17 +350,33 @@ h2
     height: 100vh;
 }
 
-.pageHeading
+.pageHeadingContainer
 {
     padding-top: 0;
     color: #d8ecf5;
     font-family: var(--defaultText);
     font-weight: bold;
     font-size: 50px;
-    overflow: hidden;
     padding-bottom: 5%;
     width: 100%;
-    text-align: center;
+}
+
+.pageHeading
+{
+    width: fit-content;
+    margin-right: auto;
+    margin-left: auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.animatedOverlay
+{
+    background-color: var(--background-color);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
 }
 
 .welcomeContainer
@@ -382,7 +414,7 @@ h2
 {
     position: absolute;
     left: 50%;
-    opacity: 1;
+    opacity: 0;
     top: 50%;
     transform: translate(-50%, 140%);
     z-index: 10;
@@ -397,6 +429,7 @@ h2
     height: 22%;
     display: flex;
     padding-bottom: 5%;
+    position: relative;
 }
 
 .presentationBox
@@ -466,6 +499,7 @@ h2
     font-style: italic;
     padding: 5px;
     margin-top: 0;
+    color: var(--text-light);
 }
 
 .viewMore
@@ -481,18 +515,28 @@ h2
 
 .aboutContainer
 {
-    margin-top: 0;
-    max-width: 700px;
+    max-width: 800px;
     margin-right: auto;
     margin-left: auto;
     margin-bottom: auto;
-    height: 100%;
     font-family: var(--defaultText);
-    color: white;
+    color: var(--text-light);
     text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 53%;
+    transform: translate(-50%, -50%);
+    background-color: var(--highlight-color);
+    padding-top: 18px;
+    padding-right: 20px;
+    padding-left: 20px;
+
+    -webkit-box-shadow: 0px 0px 32px 3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 32px 3px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 32px 3px rgba(0,0,0,0.75);
 }
 
-.learnMore
+/* .learnMore
 {
     border-style: none;
     width: 250px;
@@ -510,29 +554,46 @@ h2
     -webkit-box-shadow: 0px 0px 16px 3px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 16px 3px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 16px 3px rgba(0,0,0,0.75);
+} */
+
+.aboutContainer p
+{
+    font-size: 20px;
 }
 
-.services
+.aboutImg
 {
-    width: 100%;
-    text-align: center;
-    font-size: 30px;
-    color: var(--highlight-color);
-    font-weight: bold;
-    text-decoration: underline;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    padding-bottom: 50%;
 }
 
-.skillsContainer
+/* -------------------------------------- Services Page ------------------------------ */
+
+.servicesContainer
 {
+    margin-top: 0;
     max-width: 700px;
-    padding-top: 10px;
-    z-index: 13;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
+    height: 100%;
+    font-family: var(--defaultText);
+    color: var(--text-light);
+    text-align: center;
 }
 
 .skillboxContainer
 {
-    width: 100%;
+    width: 72%;
     float: left;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .skillbox
@@ -546,17 +607,24 @@ h2
 .skillbox:hover
 {
     -webkit-filter: brightness(0.5);
+    cursor: help;
 }
 
 .selectedSkill
 {
     float: right;
-    width: 100%;
-    height: 200px;
-    border-radius: 10px;
-    overflow: hidden;
+    width: 48%;
+    height: 150px;
     transition: 1s;
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 80%;
+    transform: translate(-50%, -50%);
+    box-shadow: -1px -1px 110px -13px rgba(0,0,0,0.75) inset;
+    -webkit-box-shadow: -1px -1px 110px -13px rgba(0,0,0,0.75) inset;
+    -moz-box-shadow: -1px -1px 110px -13px rgba(0,0,0,0.75) inset;
+    background-color: var(--background-color);
+    z-index: -1;
 }
 
 .skillDescription
@@ -568,7 +636,9 @@ h2
     margin: 0;
     opacity: 0;
     transition: 0.5s;
-    font-size: 35px;
+    font-size: 25px;
+    transition: 0.5s;
+    width: 90%;
 }
 
 .skillDescription.visible
@@ -582,25 +652,20 @@ h2
     min-width: none;
 }
 
-.aboutContainer p
-{
-    font-size: 20px;
-}
-
 .wheelContainer
 {
     position: absolute;
     left: 50%;
-    top: 50%;
-    width: 55%;
-    padding-bottom: 55%;
+    top: 40%;
+    width: 48%;
+    padding-bottom: 48%;
     transform: translate(-50%, -50%);
     overflow: hidden;
     z-index: -1;
     border-radius: 50%;
-    /* background-color: #181925; */
-    background: radial-gradient(#200007, #1c1f25, #1c1f25, #1c1f25);
+    background: radial-gradient(var(--background-highlight), var(--background-color),var(--background-color),var(--background-color));
     transition: 0.5s;
+    opacity: 0;
 
     box-shadow: -1px -1px 110px -13px rgba(0,0,0,0.75) inset;
     -webkit-box-shadow: -1px -1px 110px -13px rgba(0,0,0,0.75) inset;
@@ -677,7 +742,7 @@ h2
     margin-left: auto;
     margin-bottom: auto;
     font-family: var(--defaultText);
-    color: white;
+    color: var(--text-light);
     font-size: 24px;
 }
 
@@ -697,19 +762,25 @@ h2
 {
 
     width: 50%;
-    color: #a3bfcc;
+    color: var(--highlight-color);
     padding: 10px;
     text-decoration: none;
     transition: 0.5s;
     white-space: nowrap;
-    border: 2px solid #a3bfcc;
+    border: 2px solid var(--highlight-color);
     border-radius: 10px;
+    background-size: 100% 0%;
 }
 
 .submitForm:hover
 {
-    color: black;
-    background-color: #a3bfcc;
+    color: var(--text-light);
+    background: var(--highlight-color);
+    background-size: 100% 100%;
+
+    -webkit-box-shadow: 0px 0px 32px 3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 32px 3px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 32px 3px rgba(0,0,0,0.75);
 }
 
 .backTo
@@ -760,6 +831,7 @@ h2
     border-bottom: 2px solid rgba(255, 255, 255, 0);
     margin-left: 20px;
     margin-right: 20px;
+    background-size: 50% 50%;
 }
 
 .mediaLinks ul li a:hover
@@ -801,7 +873,7 @@ h2
 .three
 {
     z-index: 9;
-    opacity: 1;
+    opacity: 0;
     pointer-events: none;
     transition: 1s;
 }
