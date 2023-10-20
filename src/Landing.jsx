@@ -16,6 +16,7 @@ export default function Landing(props)
 
     const [ hamburgerMenuOpened, setHamburgerMenuOpened ] = useState(false)
     const [ krabbyPattyLinks, setKrabbyPattyLinks ] = useState('krabbyPattyLinks hidden')
+    const [ krabbyPattyState, setKrabbyPattyState ] = useState('krabbyPatty homeState')
         
     const [ skillDescription, setSkillDescription ] = useState(null)
     const [ wheelDirection, setWheelDirection ] = useState('wheelOfWonder')
@@ -37,7 +38,10 @@ export default function Landing(props)
             showWebgl()
             gsap.delayedCall(0.5, () =>
             {
-                document.getElementById('cursorPic').style.opacity = 1
+                if(document.getElementById('scrollableContent').scrollTop < 10)
+                {
+                    document.getElementById('cursorPic').style.opacity = 1   
+                }
             })
         })
     }, [])
@@ -57,7 +61,7 @@ export default function Landing(props)
     const contactRef = useRef(null)
     const contactIsInView = useInView(contactRef, { once: true })
 
-    // Run everytime a motion element is in view
+    // Run every time a motion element is in view
     useEffect(() =>
     {
         if( portfolioIsInView ){ motionControls.start('portfolioVisible') }
@@ -84,6 +88,7 @@ export default function Landing(props)
     const openBox1 = () => { window.open('https://www.performancearchitects.ca/', '_blank') }
     const openBox2 = () => { window.open('https://altshiftspace.xyz/', '_blank') }
     const openBox3 = () => { window.open('https://tuningthecity.com/', '_blank') }
+    const openArtistWebsite = () => { window.open('https://juliendarling-funk.com/works', '_blank') }
 
     const changeToJs = () => { setSkillDescription('js'), setWheelDirection('one wheelOfWonder') }
     const changeToCss = () => { setSkillDescription('css'), setWheelDirection('three wheelOfWonder') }
@@ -112,6 +117,10 @@ export default function Landing(props)
         {
             setHeaderLinksVisible(false)
             setCurtainState('curtainContainer close')
+            if(document.getElementById('scrollableContent').scrollTop < 10)
+            {
+                setKrabbyPattyState('krabbyPatty homeState')
+            }
         })
     }
 
@@ -127,6 +136,7 @@ export default function Landing(props)
     {
         if(document.getElementById('scrollableContent').scrollTop > 10 && curtainsOpen === false)
         {
+            setKrabbyPattyState('krabbyPatty')
             openCurtains()
             animateDividingLine()
             hideWebgl()
@@ -149,12 +159,29 @@ export default function Landing(props)
         {
             setKrabbyPattyLinks('krabbyPattyLinks')
             setHamburgerMenuOpened(true)
+            setKrabbyPattyState('krabbyPatty homeState opened')
+            if(document.getElementById('scrollableContent').scrollTop < 10)
+            {
+                hideWebgl()
+                document.getElementById('cursorPic').style.opacity = 0
+            }
         }
         // Close Hamburger Menu
         else if( hamburgerMenuOpened === true )
         {
             setKrabbyPattyLinks('krabbyPattyLinks hidden')
             setHamburgerMenuOpened(false)
+
+            if(document.getElementById('scrollableContent').scrollTop < 10)
+            {
+                setKrabbyPattyState('krabbyPatty homeState')
+                showWebgl()
+                document.getElementById('cursorPic').style.opacity = 1
+            }
+            else
+            {
+                setKrabbyPattyState('krabbyPatty')
+            }
         }
     }
 
@@ -168,42 +195,45 @@ export default function Landing(props)
 
     const hideWebgl = () => { document.getElementById('three').style.opacity = 0 }
 
+    const backToTop = () =>
+    {
+        closeCurtains()
+        showWebgl()
+        document.getElementById('sphereActivation').style.pointerEvents = "all"
+    }
+
     return <>
         {/* =================================== CURTAINS =================================== */}
         <div className={ curtainState }>
             <h1 className={ hamburgerMenuOpened ? 'landingTitle hidden' : 'landingTitle' }>Julien Darling-Funk Design.</h1>
         </div>
+
+        <div className={ hamburgerMenuOpened ? 'krabbyPattyLinks opened' : 'krabbyPattyLinks' }>
+            <ul>
+                <li><a href="#portfolioAnchor" onClick={exitKrabbyPatty}>Projects</a></li>
+                <li><a href="#aboutAnchor" onClick={exitKrabbyPatty}>About</a></li>
+                <li><a href="#servicesAnchor" onClick={exitKrabbyPatty}>Services</a></li>
+                <li><a href="#contactAnchor" onClick={exitKrabbyPatty}>Contact</a></li>
+            </ul>
+        </div>
         {/* ================================== HEADER LINKS ================================= */}
         <div className='headerLinksContainer'>
             <div className={ headerLinksVisible ? 'headerLinks visible' : 'headerLinks' }>
                 <ul>
-                    <li><a href="#contactAnchor">Contact</a></li>
-                    <li><a href="#aboutAnchor">About</a></li>
-                    <li><a href="#portfolioAnchor">Projects</a></li>
+                    <li><div><a href="#contactAnchor">Contact</a></div></li>
+                    <li><div><a href="#servicesAnchor">Services</a></div></li>
+                    <li><div><a href="#aboutAnchor">About</a></div></li>
+                    <li><div><a href="#portfolioAnchor">Projects</a></div></li>
                 </ul>
             </div>
             {/* =============================== HAMBURGER MENU =============================== */}
-            <div className={ hamburgerMenuOpened ? 'krabbyPatty opened' : 'krabbyPatty' } onClick={ engageKrabbyPatty }>
+            <div className={ krabbyPattyState } onClick={ engageKrabbyPatty }>
                 <div className='lettuce' />
                 <div className='patty' />
                 <div className='tomato' />
                 <div className='bun1' />
                 <div className='bun2' />
-            </div>
-
-            <div className={ hamburgerMenuOpened ? 'krabbyPattyLinks opened' : 'krabbyPattyLinks' }>
-                <ul>
-                    <li><a href="#portfolioAnchor" onClick={exitKrabbyPatty}>Projects</a></li>
-                    <li><a href="#contactAnchor" onClick={exitKrabbyPatty}>Contact</a></li>
-                    <li><a href="#aboutAnchor" onClick={exitKrabbyPatty}>About</a></li>
-                </ul>
-            </div>
-
-            <ul className={ krabbyPattyLinks }>
-                <li><a href="#portfolioAnchor">Projects</a></li>
-                <li><a href="#aboutAnchor">About</a></li>
-                <li><a href="#contactAnchor">Contact</a></li>
-            </ul>
+            </div>            
 
             <div className={ headerLinksVisible ? 'instagramLink visible' : 'instagramLink' }>
                 <a href="https://www.instagram.com/julienkdf/" target='_blank'>Instagram.</a>
@@ -237,7 +267,6 @@ export default function Landing(props)
                 <div className='pageHeadingContainer'>
                     <motion.div
                         className='pageHeading'
-                        ref={portfolioRef} 
                         variants={{
                             hidden: { opacity: 0, x: 30 },
                             portfolioVisible: { opacity: 1, x: 0 }
@@ -261,7 +290,7 @@ export default function Landing(props)
                 </div>
 
                 <div className='presentationContainer'>
-                    <div className='presentationBox'>
+                    <div className='presentationBox' ref={portfolioRef} >
                         <img src="./images/performanceArchitects.png" alt="" />
                         <img 
                             className={ box1playing ? 'webAnim visible' : 'webAnim' } 
@@ -280,7 +309,7 @@ export default function Landing(props)
                         }}
                         initial='hidden'
                         animate={motionControls}
-                        transition={{ duration: 0.5, delay: 0.75 }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
                     >
                         <h1>Performance Architects</h1>
                         <p>
@@ -311,7 +340,7 @@ export default function Landing(props)
                         }}
                         initial='hidden'
                         animate={motionControls}
-                        transition={{ duration: 0.5, delay: 0.85 }}
+                        transition={{ duration: 0.5, delay: 0.75 }}
                     >
                         <h1>ALT + SHIFT _</h1> 
                         <p>
@@ -342,7 +371,7 @@ export default function Landing(props)
                         }}
                         initial='hidden'
                         animate={motionControls}
-                        transition={{ duration: 0.5, delay: 0.5 }}
+                        transition={{ duration: 0.5, delay: 1 }}
                     >
                         <h1>Tuning the City</h1>
                         <p>
@@ -356,13 +385,12 @@ export default function Landing(props)
                 {/* <a href=''>See more projects &#8649;</a> */}
             </div>
             {/* ==================================== ABOUT PAGE ================================== */}
-            <div className='page' id='aboutPage'>
+            <div className='page aboutFix' id='aboutPage'>
                 <a id='aboutAnchor' />
                 <div className='pageHeadingContainer'>
                     
                     <motion.div
                         className='pageHeading'
-                        ref={aboutRef}
                         variants={{
                             hidden: { opacity: 0, x: 30 },
                             aboutVisible: { opacity: 1, x: 0 }
@@ -380,14 +408,24 @@ export default function Landing(props)
                             }}
                             initial='hidden'
                             animate={motionControls}
-                            transition={{ duration: 0.5, delay: 0.1 }}
+                            transition={{ duration: 0.5, delay: 0.25 }}
                         />
                     </motion.div>
 
                 </div>
-                <dir className='aboutImg'>
+
+                <motion.div 
+                    className='aboutImg' 
+                    variants={{
+                        hidden: { opacity: 0 },
+                        aboutVisible: { opacity: 1 }
+                    }}
+                    initial='hidden'
+                    animate={motionControls}
+                    transition={{ duration: 0.5, delay: 0.25 }}
+                >
                     <img src="./images/water.png" alt="" />
-                </dir>
+                </motion.div>
 
                 <div className='aboutContainer'>
                     <motion.div
@@ -397,14 +435,32 @@ export default function Landing(props)
                         }}
                         initial='hidden'
                         animate={motionControls}
-                        transition={{ duration: 0.5, delay: 0.5 }}
+                        transition={{ duration: 0.5, delay: 0.75 }}
                     >
-                        <p className='aboutText'>
-                        Julien Darling-Funk Design is focused on providing front-end website design services with an emphasis on accessability, backwards compatability, cross-device compatability, and cross-browser compatability. All projects are optimized for older devices as well as for mobile. 
-                        <br />
+                        <p className='aboutText' ref={aboutRef}>
+                        Julien Darling-Funk Design is focused on providing front-end website design services with an emphasis on accessibility as well as, backwards, cross-device, and cross-browser compatibility. All projects are optimized for mobile devices. 
                         <br />
                         </p>
                     </motion.div>
+                        
+                    <div className='hz' />
+                    
+                    <motion.div
+                        variants={{
+                            hidden: { opacity: 0, x: 30 },
+                            aboutVisible: { opacity: 1, x: 0 }
+                        }}
+                        initial='hidden'
+                        animate={motionControls}
+                        transition={{ duration: 0.5, delay: 1 }}
+                    >
+                        <p className='aboutText'>
+                        Utilizing a broad skill-set, websites are aesthetically and functionally designed to reflect the client, business, or brand.
+                        <br />
+                        </p>
+                    </motion.div>
+
+                    <div className='hz' />
 
                     <motion.div
                         variants={{
@@ -413,34 +469,41 @@ export default function Landing(props)
                         }}
                         initial='hidden'
                         animate={motionControls}
-                        transition={{ duration: 0.5, delay: 0.7 }}
+                        transition={{ duration: 0.5, delay: 1.25 }}
                     >
                         <p className='aboutText'>
-                        Utilizing a broad skillset, websites are aesthetically and functionally designed to reflect the client, business, or brand. Yes, this is me selling out...
-                        <br />
-                        <br />
+                        Julien is an artist, programmer, and digital enthusiast. Designing websites for more than two years, Julien finds new and unique ways to tell stories on the internet. <a href="https://juliendarling-funk.com/works" target='_blank' style={{color: '#3f1a24'}}>See more of Julien's work here</a>.
                         </p>
                     </motion.div>
                     
                 </div>
             </div>
             {/* ================================= SERVICES PAGE ================================== */}
-            <div className='page'>
-                <a id="serviceAnchor" />
+            <div className='page servicesFix'>
+                <a id="servicesAnchor" />
 
                 <div className='pageHeadingContainer'>
                     <motion.div 
                         className='pageHeading'
-                        ref={servicesRef}
                         variants={{
                             hidden: { opacity: 0, x: 30 },
                             servicesVisible: { opacity: 1, x: 0 }
                         }}
                         initial='hidden'
                         animate={motionControls}
-                        transition={{ duration: 0.5, delay: 0.5 }}
+                        transition={{ duration: 0.5, delay: 0 }}
                     >
                         Services
+                        <motion.div 
+                            className='animatedOverlay'
+                            variants={{
+                                hidden: { opacity: 1 },
+                                servicesVisible: { height: 0 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 0.25 }}
+                        />
                     </motion.div>
                 </div>
 
@@ -450,7 +513,7 @@ export default function Landing(props)
                         className='wheelContainer'
                         variants={{
                             hidden: { opacity: 0 },
-                            aboutVisible: { opacity: 1 }
+                            servicesVisible: { opacity: 1 }
                         }}
                         initial='hidden'
                         animate={motionControls}
@@ -461,20 +524,74 @@ export default function Landing(props)
                         <img src="./images/wheel.png" className={ wheelDirection + 'Axis' } />
                     </motion.div>
 
-                    <div className='skillboxContainer'>
-                        <img className='skillbox' id='jsSkill' src='./images/logos/javascript.png' onPointerOver={ changeToJs } />
-                        <img className='skillbox' id='cssSkill' src='./images/logos/css.png' onPointerOver={ changeToCss } />
-                        <img className='skillbox' id='reactSkill' src='./images/logos/react.png' onPointerOver={ changeToReact } />
-                        <img className='skillbox' id='threeSkill' src='./images/logos/three.png' onPointerOver={ changeToThree } />
-                        <img className='skillbox' id='psSkill' src='./images/logos/photoshop.png' onPointerOver={ changeToPhotoshop } />
+                    <div className='skillboxContainer' ref={servicesRef}>
+                        <motion.div 
+                            className='skillbox'
+                            variants={{
+                                hidden: { opacity: 0 },
+                                servicesVisible: { opacity: 1 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 0.6 }}
+                        ><img id='jsSkill' src='./images/logos/javascript.png' onPointerOver={ changeToJs } /></motion.div>
+                        <motion.div 
+                            className='skillbox'
+                            variants={{
+                                hidden: { opacity: 0 },
+                                servicesVisible: { opacity: 1 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 0.7 }}
+                        ><img id='cssSkill' src='./images/logos/css.png' onPointerOver={ changeToCss } /></motion.div>
+                        <motion.div 
+                            className='skillbox'
+                            variants={{
+                                hidden: { opacity: 0 },
+                                servicesVisible: { opacity: 1 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 0.8 }}
+                        ><img id='reactSkill' src='./images/logos/react.png' onPointerOver={ changeToReact } /></motion.div>
+                        <motion.div 
+                            className='skillbox'
+                            variants={{
+                                hidden: { opacity: 0 },
+                                servicesVisible: { opacity: 1 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 0.9 }}
+                        ><img id='threeSkill' src='./images/logos/three.png' onPointerOver={ changeToThree } /></motion.div>
+                        <motion.div 
+                            className='skillbox'
+                            variants={{
+                                hidden: { opacity: 0 },
+                                servicesVisible: { opacity: 1 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 1 }}
+                        ><img id='psSkill' src='./images/logos/photoshop.png' onPointerOver={ changeToPhotoshop } /></motion.div>
                     </div>
 
                     
-                        <div className='selectedSkill' id='selectedSkill'>
-
+                        <motion.div 
+                            className='selectedSkill' 
+                            id='selectedSkill'
+                            variants={{
+                                hidden: { opacity: 0 },
+                                servicesVisible: { opacity: 1 }
+                            }}
+                            initial='hidden'
+                            animate={motionControls}
+                            transition={{ duration: 0.5, delay: 1 }}
+                        >
                             <div className='selectedSkillDescription'>
                                 <p className={ skillDescription === null ? 'skillDescription visible' : 'skillDescription' } >
-                                Hover over an icon to begin...
+                                <span className='textLowlight'>Hover over an icon to begin...</span> 
                                 </p>
                                 <p className={ skillDescription === 'js' ? 'skillDescription visible' : 'skillDescription' } >
                                 <span className='textHighlight' >Javascript</span> makes websites dynamic, easy to navigate, and optimized.
@@ -492,17 +609,16 @@ export default function Landing(props)
                                     Custom logos, icons, and handdrawn animations drawn in <span className='textHighlight' >Photoshop</span> truly bring out a the character of a website.
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
                    
                 </div>
             </div>
             {/* ================================= CONTACT PAGE =================================== */}
-            <div className='page'>
+            <div className='page contactFix'>
                 <a id='contactAnchor' />
                 <div className='pageHeadingContainer'>
                     <motion.div
                         className='pageHeading'
-                        ref={contactRef}
                         variants={{
                             hidden: { opacity: 0, x: 30 },
                             contactVisible: { opacity: 1, x: 0 }
@@ -520,41 +636,109 @@ export default function Landing(props)
                             }}
                             initial='hidden'
                             animate={motionControls}
-                            transition={{ duration: 0.65, delay: 0.5 }}
+                            transition={{ duration: 0.65, delay: 0.1 }}
                         />
                     </motion.div>
                 </div>
                 <div className='contactContainer'>
-                    <p className='contactPrompt'>Interested in a stunning website?</p>
-                    <div className='contactForm'>
+                    <motion.div
+                        variants={{
+                            hidden: { opacity: 0, x: 30 },
+                            contactVisible: { opacity: 1, x: 0 }
+                        }}
+                        initial='hidden'
+                        animate={motionControls}
+                        transition={{ duration: 0.75, delay: 0.5 }}
+                    ><p className='contactPrompt'>Interested in creating a stunning website?</p></motion.div>
+                    <motion.div 
+                        className='contactForm'
+                        ref={contactRef}
+                        variants={{
+                            hidden: { opacity: 0, x: 30 },
+                            contactVisible: { opacity: 1, x: 0 }
+                        }}
+                        initial='hidden'
+                        animate={motionControls}
+                        transition={{ duration: 0.75, delay: 0.75 }}
+                    >
                         <a href='mailto:juliendarlingfunk@gmail.com?subject=Inquiry' className='submitForm'>Click here to send an email inquiry.</a>
-                    </div>
+                    </motion.div>
+                    <br />
                     <div className='mediaLinks'>
                         <motion.div
                             className='socialTitle'
-                            ref={contactRef}
                             variants={{
                                 hidden: { opacity: 0, x: 30 },
                                 contactVisible: { opacity: 1, x: 0 }
                             }}
                             initial='hidden'
                             animate={motionControls}
-                            transition={{ duration: 0.75, delay: 0.25 }}
+                            transition={{ duration: 0.75, delay: 1 }}
                         >
                             <h2>Socials</h2>
                         </motion.div>
                         <ul className='mediaLinkYepper'>
-                            <li><a href="https://www.linkedin.com/in/julien-darling-funk-263aa5225/" target='_blank'>Linkedin</a></li>
-                            <li>•</li>
-                            <li><a href="https://github.com/Keonikun" target='_blank'>Github</a></li>
-                            <li>•</li>
-                            <li><a href="https://www.instagram.com/julienkdf/" target='_blank'>Instagram</a></li>
+                            <li><motion.div
+                                    variants={{
+                                        hidden: { opacity: 0, x: 30 },
+                                        contactVisible: { opacity: 1, x: 0 }
+                                    }}
+                                    initial='hidden'
+                                    animate={motionControls}
+                                    transition={{ duration: 0.75, delay: 1.2 }}
+                                ><a href="https://www.linkedin.com/in/julien-darling-funk-263aa5225/" target='_blank'>Linkedin</a></motion.div></li>
+                            <li><motion.div
+                                    variants={{
+                                        hidden: { opacity: 0, x: 30 },
+                                        contactVisible: { opacity: 1, x: 0 }
+                                    }}
+                                    initial='hidden'
+                                    animate={motionControls}
+                                    transition={{ duration: 0.75, delay: 1.4 }}
+                                >•</motion.div></li>
+                            <li><motion.div
+                                    variants={{
+                                        hidden: { opacity: 0, x: 30 },
+                                        contactVisible: { opacity: 1, x: 0 }
+                                    }}
+                                    initial='hidden'
+                                    animate={motionControls}
+                                    transition={{ duration: 0.75, delay: 1.6 }}
+                                ><a href="https://github.com/Keonikun" target='_blank'>Github</a></motion.div></li>
+                            <li><motion.div
+                                    variants={{
+                                        hidden: { opacity: 0, x: 30 },
+                                        contactVisible: { opacity: 1, x: 0 }
+                                    }}
+                                    initial='hidden'
+                                    animate={motionControls}
+                                    transition={{ duration: 0.75, delay: 1.8 }}
+                                >•</motion.div></li>
+                            <li><motion.div
+                                    variants={{
+                                        hidden: { opacity: 0, x: 30 },
+                                        contactVisible: { opacity: 1, x: 0 }
+                                    }}
+                                    initial='hidden'
+                                    animate={motionControls}
+                                    transition={{ duration: 0.75, delay: 2.0 }}
+                                ><a href="https://www.instagram.com/julienkdf/" target='_blank'>Instagram</a></motion.div></li>
                         </ul>
                     </div>
-                    <img src="./images/droplet.gif" alt="" />
-                    <br />
-                    <a href="#topAnchor" className='backTo'>Back to top</a>
                 </div>
+                <img src="./images/droplet.gif" className='droplet' onClick={openArtistWebsite} />
+                <motion.div 
+                    className='backTo'
+                    variants={{
+                        hidden: { opacity: 0 },
+                        contactVisible: { opacity: 1 }
+                    }}
+                    initial='hidden'
+                    animate={motionControls}
+                    transition={{ duration: 0.75, delay: 2.5 }}
+                >
+                    <a href="#topAnchor" onClick={backToTop}>Back to top</a>
+                </motion.div>
             </div>
         </div>  
     </>
